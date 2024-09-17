@@ -40,61 +40,22 @@ resource "aws_vpc_security_group_egress_rule" "ec2_egress" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-# Security Group for RDS instance
-resource "aws_security_group" "rds_sg" {
-  name        = "rds_security_group"
-  description = "Allow MySQL traffic from EC2"
-  vpc_id      = var.vpc_id
-
-  tags = {
-    Name = "rds_sg"
-  }
-}
-
-# Ingress rule for MySQL (port 3306)
-resource "aws_vpc_security_group_ingress_rule" "mysql_ingress" {
-  security_group_id = aws_security_group.rds_sg.id
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
-  source_security_group_id = aws_security_group.ec2_sg.id
-}
-
-# Egress rule for RDS
-resource "aws_vpc_security_group_egress_rule" "rds_egress" {
-  security_group_id = aws_security_group.rds_sg.id
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
 # EC2 Instance
 resource "aws_instance" "ec2_instance" {
   ami           = var.ami_id
   instance_type = var.instance_type
   security_groups = [aws_security_group.ec2_sg.name]
 
-  tags = {
-    Name = "ec2_instance"
-  }
-}
-
-# RDS MySQL instance
-resource "aws_db_instance" "rds_instance" {
-  allocated_storage    = 20
-  instance_class       = var.rds_instance_class
-  engine               = var.rds_engine
-  engine_version       = "8.0"
-  name                 = var.db_name
-  username             = var.db_username
-  password             = var.db_password
-  publicly_accessible  = false
-  skip_final_snapshot  = true
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  # User data to install Nginx
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update -y
+              sudo apt install nginx -y
+              sudo systemctl start nginx
+              sudo systemctl enable nginx
+              EOF
 
   tags = {
-    Name = "rds_instance"
+    Name = "ec2_instance_with_nginx"
   }
 }
-
