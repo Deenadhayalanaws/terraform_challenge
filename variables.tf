@@ -1,43 +1,45 @@
-# AWS region
 variable "region" {
-  description = "The AWS region to create resources in"
+  description = "The AWS region to deploy in"
   default     = "us-west-2"
 }
 
-# VPC ID
-variable "vpc_id" {
-  description = "The ID of the VPC where the security groups will be created"
-  type        = string
-  default     = "vpc-08eea79a880600dd5"
-}
-
-# EC2 Instance Variables
 variable "ami_id" {
-  description = "The AMI ID to use for the EC2 instance"
-  default     = "ami-0075013580f6322a1"  # Ubuntu 20.04 LTS in us-west-2
+  description = "AMI ID for the EC2 instance"
+  default     = "ami-0075013580f6322a1" # Ubuntu 20.04 AMI
 }
 
 variable "instance_type" {
-  description = "The instance type for the EC2 instance"
+  description = "EC2 instance type"
   default     = "t2.micro"
 }
 
-# RDS Variables
+variable "vpc_id" {
+  description = "VPC ID where the infrastructure will be deployed"
+default     = "vpc-08eea79a880600dd5"
+}
+
 variable "rds_instance_class" {
-  description = "The instance class for the RDS instance"
-  default     = "db.t2.micro"
+  description = "RDS instance class"
+  default     = "db.t4g.micro"    #db.t2.micro not available now so im used this
 }
 
 variable "rds_engine" {
-  description = "The database engine for RDS"
+  description = "RDS engine"
   default     = "mysql"
 }
+
 variable "db_name" {
-  description = "The name of the database"
-  default     = "mydb"
+  description = "Terraform challenge"
+default     = "terraform_challenge"
 }
 
 variable "db_username" {
-  description = "The database master username"
-  default     = "admin"
+  description = "Deena"
+  default     = "Deena"
 }
+
+variable "db_password" {
+  description = "Deena"
+  default     = "Dhayalan#2024"
+}
+
